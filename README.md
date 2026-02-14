@@ -1,4 +1,4 @@
-# Claude Masters
+# Claude Code Mastering
 
 A batteries-included `.claude/` configuration boilerplate for [Claude Code](https://docs.anthropic.com/en/docs/claude-code). Drop it into any project and get a structured, opinionated development workflow powered by MCP tools, slash commands, custom agents, spec-driven development, and more.
 
@@ -13,7 +13,47 @@ A batteries-included `.claude/` configuration boilerplate for [Claude Code](http
 | **Templates** | 9 | Structured templates for specs, bugs, and design documents |
 | **MCP Servers** | 3 | Sequential Thinking, Serena (LSP code intelligence), Context7 (library docs) |
 
-## Quick Start
+## One-Click Setup (Copy-Paste to AI)
+
+The fastest way to get started. Copy the prompt below and paste it into **Claude Code** inside your project directory:
+
+<details>
+<summary><strong>Click to expand setup prompt</strong></summary>
+
+```
+Set up the Claude Code Mastering boilerplate in this project. Follow these steps:
+
+1. Clone the boilerplate repo to a temp directory and copy the config files:
+   - git clone https://github.com/yusupsupriyadi/claude-code-mastering.git /tmp/claude-code-mastering
+   - Copy the .claude/ folder, .mcp.json, and CLAUDE.md from /tmp/claude-code-mastering into this project root
+   - Remove the temp clone: rm -rf /tmp/claude-code-mastering
+
+2. After copying, ask me the following questions to customize the boilerplate:
+   a. "What is your project name?" → Replace all "your-project-" placeholders in .claude/ files
+   b. "What tech stack are you using?" (e.g., Python/FastAPI backend, React frontend, Terraform infra, etc.)
+      → Remove irrelevant components:
+        - No backend? Delete .claude/commands/backend/, remove backend section from .claude/rules/deployment.md
+        - No frontend? Delete .claude/commands/frontend/, .claude/rules/frontend.md, .claude/agents/frontend-builder.md
+        - No infrastructure? Delete .claude/commands/infra/, .claude/rules/infrastructure.md, .claude/agents/terraform-planner.md
+   c. "What is your preferred communication language?" → Update the language setting in CLAUDE.md (default is Bahasa Indonesia)
+   d. "Do you use AWS? If yes, what are your AWS profile names for dev and prod?" → Replace your-dev-profile and your-prod-profile in .claude/ files. If no AWS, remove infra-related files.
+
+3. After customization, show me a summary of:
+   - Which files were copied
+   - Which components were removed (if any)
+   - Which placeholders were replaced
+   - What slash commands are available (list all /command-name)
+
+4. Finally, verify the setup by checking that .claude/ folder exists with the correct structure.
+```
+
+</details>
+
+> **Note**: This works with Claude Code CLI. For other AI assistants, you may need to adjust the git/file commands to match their tool capabilities.
+
+---
+
+## Manual Setup
 
 ### Prerequisites
 
@@ -21,20 +61,22 @@ A batteries-included `.claude/` configuration boilerplate for [Claude Code](http
 - [Node.js](https://nodejs.org/) 18+ (for MCP servers)
 - [Python](https://www.python.org/) 3.11+ with `uvx` (for Serena MCP) — install via [uv](https://docs.astral.sh/uv/)
 
-### Setup
+### Step-by-Step
 
 **1. Clone or copy into your project**
 
 ```bash
 # Option A: Clone as a starting point for a new project
-git clone https://github.com/your-username/claude-masters.git my-project
+git clone https://github.com/yusupsupriyadi/claude-code-mastering.git my-project
 cd my-project
 rm -rf .git && git init
 
 # Option B: Copy into an existing project
-cp -r claude-masters/.claude your-project/.claude
-cp claude-masters/.mcp.json your-project/.mcp.json
-cp claude-masters/CLAUDE.md your-project/CLAUDE.md
+git clone https://github.com/yusupsupriyadi/claude-code-mastering.git /tmp/ccm
+cp -r /tmp/ccm/.claude your-project/.claude
+cp /tmp/ccm/.mcp.json your-project/.mcp.json
+cp /tmp/ccm/CLAUDE.md your-project/CLAUDE.md
+rm -rf /tmp/ccm
 ```
 
 **2. Customize for your project**
@@ -353,6 +395,10 @@ A: Simply delete the `.md` file. Claude Code discovers them at startup.
 
 **Q: The MCP servers aren't starting. What do I check?**
 A: Verify Node.js 18+ and Python 3.11+ are installed. Check `.mcp.json` paths. Run `npx -y @modelcontextprotocol/server-sequential-thinking` manually to test.
+
+## Contributing
+
+Contributions are welcome! Feel free to open issues or submit pull requests at [github.com/yusupsupriyadi/claude-code-mastering](https://github.com/yusupsupriyadi/claude-code-mastering).
 
 ## License
 
