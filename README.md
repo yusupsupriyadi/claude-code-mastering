@@ -13,12 +13,30 @@ A batteries-included `.claude/` configuration boilerplate for [Claude Code](http
 | **Templates** | 9 | Structured templates for specs, bugs, and design documents |
 | **MCP Servers** | 3 | Sequential Thinking, Serena (LSP code intelligence), Context7 (library docs) |
 
+## How It Works
+
+Every command you give flows through three MCP servers working together:
+
+<p align="center">
+  <img src="assets/workflow-diagram.png" alt="Vibe Coding Workflow Diagram" width="800" />
+</p>
+
+**The flow:**
+
+1. **You give a command** — a task, bug fix, feature request, or question
+2. **Sequential Thinking** analyzes the problem step-by-step, consulting **Context7** for up-to-date library documentation when needed
+3. **Serena** takes over for code execution:
+   - **(1) Read** — loads previous context from memory (`list_memories` → `read_memory`)
+   - **(2) Execute** — navigates and edits code using LSP-powered semantic tools
+   - **(3) Create** — saves new context to memory for future sessions (`write_memory`)
+
+This creates a **persistent, intelligent coding loop** — Claude remembers what it did last session, thinks before acting, and always uses current documentation.
+
+---
+
 ## One-Click Setup (Copy-Paste to AI)
 
 The fastest way to get started. Copy the prompt below and paste it into **Claude Code** inside your project directory:
-
-<details>
-<summary><strong>Click to expand setup prompt</strong></summary>
 
 ```
 Set up the Claude Code Mastering boilerplate in this project. Follow these steps:
@@ -46,8 +64,6 @@ Set up the Claude Code Mastering boilerplate in this project. Follow these steps
 
 4. Finally, verify the setup by checking that .claude/ folder exists with the correct structure.
 ```
-
-</details>
 
 > **Note**: This works with Claude Code CLI. For other AI assistants, you may need to adjust the git/file commands to match their tool capabilities.
 
