@@ -25,6 +25,12 @@
       "env": {
         "DEFAULT_MINIMUM_TOKENS": "6000"
       }
+    },
+    "playwright-mcp": {
+      "command": "npx",
+      "args": [
+        "@playwright/mcp@latest"
+      ]
     }
   }
 }
