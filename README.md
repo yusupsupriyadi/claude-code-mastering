@@ -266,13 +266,54 @@ The workflow guides you through:
 
 ### MCP Servers
 
-Three MCP servers power the intelligent workflow:
+Three MCP servers power the intelligent workflow. All are configured in `.mcp.json` and auto-start with Claude Code.
 
-| Server | Purpose | Key Tools |
-|--------|---------|-----------|
-| **Sequential Thinking** | Step-by-step analysis before any action | `sequentialthinking` |
-| **Serena** | LSP-powered code intelligence (30+ languages) | `find_symbol`, `rename_symbol`, `write_memory`, etc. |
-| **Context7** | Up-to-date library documentation | `resolve-library-id`, `get-library-docs` |
+#### 1. Sequential Thinking
+
+> **Repo**: [modelcontextprotocol/servers/sequentialthinking](https://github.com/modelcontextprotocol/servers/tree/main/src/sequentialthinking) | **npm**: [@modelcontextprotocol/server-sequential-thinking](https://www.npmjs.com/package/@modelcontextprotocol/server-sequential-thinking) | **License**: MIT
+
+An official MCP server from the [Model Context Protocol](https://modelcontextprotocol.io/) team that enables dynamic and reflective problem-solving through structured thought sequences. Claude breaks down complex problems into manageable steps with support for **revision** (correcting earlier thoughts) and **branching** (exploring alternative paths).
+
+**What it does:**
+- Forces step-by-step analysis before any coding action
+- Supports revising previous thoughts when understanding changes
+- Enables branching into alternative solution paths
+- Tracks thought history for context continuity
+
+**Key tool:** `sequentialthinking` — takes a thought, returns structured analysis with support for `isRevision`, `branchFromThought`, and `needsMoreThoughts` parameters.
+
+#### 2. Serena
+
+> **Repo**: [oraios/serena](https://github.com/oraios/serena) | **Install**: `uvx --from git+https://github.com/oraios/serena serena start-mcp-server` | **License**: MIT
+
+A powerful coding agent toolkit by [Oraios AI](https://github.com/oraios) that provides **semantic code retrieval and editing** powered by Language Server Protocol (LSP). Unlike basic file operations, Serena understands code structure — it navigates and edits code the way a developer using an IDE would.
+
+**What it does:**
+- **Semantic navigation**: Find symbols, references, and type hierarchies across the codebase
+- **Precise editing**: Replace symbol bodies, insert before/after symbols, rename across the entire project
+- **30+ language support**: Python, TypeScript, Java, Go, Rust, C#, and many more
+- **Built-in memory**: Persistent context storage across sessions (`write_memory`, `read_memory`)
+- **Project onboarding**: Automatic project structure analysis
+
+**Key tools:** `find_symbol`, `find_referencing_symbols`, `rename_symbol`, `replace_symbol_body`, `write_memory`, `read_memory`, `onboarding`, `search_for_pattern`
+
+**Optional backend**: Also supports [JetBrains IDE plugin](https://github.com/oraios/serena) for even deeper code analysis via IntelliJ/WebStorm/PyCharm.
+
+#### 3. Context7
+
+> **Repo**: [upstash/context7](https://github.com/upstash/context7) | **npm**: [@upstash/context7-mcp](https://www.npmjs.com/package/@upstash/context7-mcp) | **License**: MIT
+
+An MCP server by [Upstash](https://upstash.com/) that delivers **up-to-date, version-specific library documentation** directly to Claude. Instead of relying on training data (which may be outdated), Context7 pulls real documentation and working code examples from official sources.
+
+**What it does:**
+- Fetches current documentation for any library (React, FastAPI, SQLAlchemy, Prisma, Next.js, etc.)
+- Returns version-specific API references and code examples
+- Eliminates hallucinated or outdated API usage
+- Free to use, no API key required for basic usage
+
+**Key tools:**
+- `resolve-library-id` — resolves a library name (e.g., "react") into a Context7-compatible ID
+- `get-library-docs` — fetches documentation for a specific topic from the resolved library
 
 ### Custom Agents
 
