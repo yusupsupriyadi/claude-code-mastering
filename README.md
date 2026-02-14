@@ -2,7 +2,7 @@
 
 A batteries-included `.claude/` configuration boilerplate for [Claude Code](https://docs.anthropic.com/en/docs/claude-code). Drop it into any project and get a structured, opinionated development workflow powered by MCP tools, slash commands, custom agents, spec-driven development, and more.
 
-## What's Inside
+## ![What's Inside](https://img.shields.io/badge/What's_Inside-7c3aed?style=for-the-badge)
 
 | Category | Count | Description |
 |----------|-------|-------------|
@@ -13,7 +13,7 @@ A batteries-included `.claude/` configuration boilerplate for [Claude Code](http
 | **Templates** | 9 | Structured templates for specs, bugs, and design documents |
 | **MCP Servers** | 3 | Sequential Thinking, Serena (LSP code intelligence), Context7 (library docs) |
 
-## How It Works
+## ![How It Works](https://img.shields.io/badge/How_It_Works-16a34a?style=for-the-badge)
 
 Every command you give flows through three MCP servers working together:
 
@@ -34,7 +34,7 @@ This creates a **persistent, intelligent coding loop** — Claude remembers what
 
 ---
 
-## One-Click Setup (Copy-Paste to AI)
+## ![One-Click Setup](https://img.shields.io/badge/One--Click_Setup_(Copy--Paste_to_AI)-ea580c?style=for-the-badge)
 
 The fastest way to get started. Copy the prompt below and paste it into **Claude Code** inside your project directory:
 
@@ -69,7 +69,7 @@ Set up the Claude Code Mastering boilerplate in this project. Follow these steps
 
 ---
 
-## Manual Setup
+## ![Manual Setup](https://img.shields.io/badge/Manual_Setup-2563eb?style=for-the-badge)
 
 ### Prerequisites
 
@@ -154,7 +154,7 @@ If you want Serena's full LSP-powered code intelligence:
 # > onboarding to index the codebase
 ```
 
-## Project Structure
+## ![Project Structure](https://img.shields.io/badge/Project_Structure-475569?style=for-the-badge)
 
 ```
 your-project/
@@ -228,7 +228,7 @@ your-project/
 └── CLAUDE.md                      # Master rules & workflow
 ```
 
-## Features
+## ![Features](https://img.shields.io/badge/Features-0891b2?style=for-the-badge)
 
 ### Slash Commands
 
@@ -280,7 +280,7 @@ The workflow guides you through:
 3. **Tasks** — Atomic, agent-friendly implementation tasks
 4. **Execution** — Step-by-step implementation with validation
 
-### MCP Servers
+### ![MCP Servers](https://img.shields.io/badge/MCP_Servers-ca8a04?style=flat-square)
 
 Three MCP servers power the intelligent workflow. All are configured in `.mcp.json` and auto-start with Claude Code.
 
@@ -331,7 +331,7 @@ An MCP server by [Upstash](https://upstash.com/) that delivers **up-to-date, ver
 - `resolve-library-id` — resolves a library name (e.g., "react") into a Context7-compatible ID
 - `get-library-docs` — fetches documentation for a specific topic from the resolved library
 
-### Custom Agents
+### ![Custom Agents](https://img.shields.io/badge/Custom_Agents-dc2626?style=flat-square)
 
 Specialized sub-agents that Claude delegates to:
 
@@ -345,7 +345,7 @@ Specialized sub-agents that Claude delegates to:
 | `spec-*-validator` | Sonnet | Validate spec documents for quality |
 | `spec-task-executor` | Sonnet | Execute individual spec tasks |
 
-## Customization Guide
+## ![Customization Guide](https://img.shields.io/badge/Customization_Guide-c026d3?style=for-the-badge)
 
 ### Adding New Rules
 
@@ -428,7 +428,7 @@ If your project doesn't have certain layers, simply delete the corresponding fil
 - **No infrastructure?** Delete `commands/infra/`, `rules/infrastructure.md`, `agents/terraform-planner.md`
 - **No frontend?** Delete `commands/frontend/`, `rules/frontend.md`, `agents/frontend-builder.md`
 
-## Requirements by Stack
+## ![Requirements](https://img.shields.io/badge/Requirements_by_Stack-4f46e5?style=for-the-badge)
 
 | Stack | Required Tools |
 |-------|---------------|
@@ -439,7 +439,7 @@ If your project doesn't have certain layers, simply delete the corresponding fil
 | **MCP: Sequential Thinking** | Node.js 18+, npx |
 | **MCP: Context7** | Node.js 18+, npx |
 
-## FAQ
+## ![FAQ](https://img.shields.io/badge/FAQ-64748b?style=for-the-badge)
 
 **Q: Do I need all three MCP servers?**
 A: Sequential Thinking and Context7 work out of the box with just Node.js. Serena requires Python/uvx but provides the most powerful code intelligence. You can disable any server in `.claude/settings.local.json`.
@@ -453,10 +453,10 @@ A: Simply delete the `.md` file. Claude Code discovers them at startup.
 **Q: The MCP servers aren't starting. What do I check?**
 A: Verify Node.js 18+ and Python 3.11+ are installed. Check `.mcp.json` paths. Run `npx -y @modelcontextprotocol/server-sequential-thinking` manually to test.
 
-## Contributing
+## ![Contributing](https://img.shields.io/badge/Contributing-16a34a?style=for-the-badge)
 
 Contributions are welcome! Feel free to open issues or submit pull requests at [github.com/yusupsupriyadi/claude-code-mastering](https://github.com/yusupsupriyadi/claude-code-mastering).
 
-## License
+## ![License](https://img.shields.io/badge/License-334155?style=for-the-badge)
 
 MIT
