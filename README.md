@@ -7,7 +7,7 @@ A batteries-included `.claude/` configuration boilerplate for [Claude Code](http
 | Category | Count | Description |
 |----------|-------|-------------|
 | **Rules** | 6 | Contextual coding standards (backend, frontend, code style, deployment, etc.) |
-| **Commands** | 15 | Slash commands for builds, tests, linting, deploys, bugs, and specs |
+| **Commands** | 21 | Slash commands for builds, tests, linting, deploys, bugs, specs, and git |
 | **Agents** | 8 | Specialized sub-agents (code reviewer, debugger, tester, etc.) |
 | **Skills** | 3 | Auto-activating assistants (API development, DB migration, security review) |
 | **Templates** | 9 | Structured templates for specs, bugs, and design documents |
@@ -164,6 +164,8 @@ your-project/
 │   │   │   ├── test.md            # /frontend:test
 │   │   │   └── storybook.md       # /frontend:storybook
 │   │   ├── deploy-check.md        # /deploy-check
+│   │   ├── git-add-commit.md      # /git-add-commit
+│   │   ├── git-pull-request.md    # /git-pull-request
 │   │   ├── bug-create.md          # /bug-create
 │   │   ├── bug-analyze.md         # /bug-analyze
 │   │   ├── bug-fix.md             # /bug-fix
@@ -222,6 +224,8 @@ Run these inside Claude Code:
 | `/frontend:test` | Run frontend tests with Vitest |
 | `/frontend:storybook` | Start Storybook dev server |
 | `/deploy-check` | Run all pre-deployment checks |
+| `/git-add-commit` | Stage and commit with structured commit messages |
+| `/git-pull-request` | Create pull request using GitHub CLI |
 
 ### Bug Workflow
 
@@ -307,6 +311,18 @@ An MCP server by [Upstash](https://upstash.com/) that delivers **up-to-date, ver
 - `resolve-library-id` — resolves a library name (e.g., "react") into a Context7-compatible ID
 - `get-library-docs` — fetches documentation for a specific topic from the resolved library
 
+#### 4. Playwright-MCP (Optional)
+
+> **Repo**: [microsoft/playwright-mcp](https://github.com/microsoft/playwright-mcp) | **npm**: [@playwright/mcp](https://www.npmjs.com/package/@playwright/mcp) | **License**: Apache-2.0
+
+Browser automation powered by Playwright. Enables Claude to interact with web pages — navigate, click, fill forms, take screenshots, and test web applications.
+
+**What it does:**
+- Full browser control: navigate, click, type, take screenshots
+- Form filling and file uploads
+- Console and network request monitoring
+- Useful for web testing and UI verification
+
 ### ![Custom Agents](https://img.shields.io/badge/Custom_Agents-dc2626?style=flat-square)
 
 Specialized sub-agents that Claude delegates to:
@@ -315,7 +331,7 @@ Specialized sub-agents that Claude delegates to:
 |-------|-------|---------|
 | `backend-tester` | Sonnet | Execute tests, analyze failures, suggest fixes |
 | `code-reviewer` | Sonnet | Review code quality, security, performance |
-| `debugger` | Sonnet | Track down bugs across the full stack |
+| `debugger` | Opus | Track down bugs across the full stack |
 | `frontend-builder` | Sonnet | Fix build errors, TypeScript issues, lint problems |
 | `spec-*-validator` | Sonnet | Validate spec documents for quality |
 | `spec-task-executor` | Sonnet | Execute individual spec tasks |
@@ -405,6 +421,7 @@ If your project doesn't have certain layers, simply delete the corresponding fil
 | **MCP: Serena** | Python 3.11+, uvx |
 | **MCP: Sequential Thinking** | Node.js 18+, npx |
 | **MCP: Context7** | Node.js 18+, npx |
+| **MCP: Playwright** (optional) | Node.js 18+, npx |
 
 ## ![FAQ](https://img.shields.io/badge/FAQ-64748b?style=for-the-badge)
 
