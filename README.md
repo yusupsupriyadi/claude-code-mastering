@@ -18,7 +18,7 @@ A batteries-included `.claude/` configuration boilerplate for [Claude Code](http
 Every command you give flows through three MCP servers working together:
 
 <p align="center">
-  <img width="1289" height="553" alt="image" src="https://github.com/user-attachments/assets/3ffa1fe6-2e81-4eb1-b4b8-c8a8642b7f61" />
+  <img width="1277" height="521" alt="image" src="https://github.com/user-attachments/assets/398f22df-adf5-4230-a95a-25cdae772a25" />
 </p>
 
 **The flow:**
