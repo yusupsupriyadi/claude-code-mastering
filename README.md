@@ -352,19 +352,13 @@ Specialized sub-agents that Claude delegates to:
 Create a new `.md` file in `.claude/rules/`:
 
 ```markdown
----
-paths:
-  - "mobile-app/**/*"
----
+# Your Custom Rules
 
-# Mobile Development Rules
-
-- Always test on both iOS and Android
-- Use responsive design patterns
+- Follow project naming conventions
+- Write tests for all new features
+- Use dependency injection pattern
 - ...
 ```
-
-The `paths:` frontmatter makes the rule only activate when working in matching directories.
 
 ### Adding New Commands
 
