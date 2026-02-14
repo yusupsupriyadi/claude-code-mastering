@@ -18,7 +18,7 @@ A batteries-included `.claude/` configuration boilerplate for [Claude Code](http
 Every command you give flows through three MCP servers working together:
 
 <p align="center">
-  <img src="assets/workflow-diagram.png" alt="Vibe Coding Workflow Diagram" width="800" />
+  <img width="1200" height="568" alt="image" src="https://github.com/user-attachments/assets/c415fe89-f58e-40cc-91c6-36480f8f23a0" />
 </p>
 
 **The flow:**
