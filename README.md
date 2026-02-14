@@ -6,9 +6,9 @@ A batteries-included `.claude/` configuration boilerplate for [Claude Code](http
 
 | Category | Count | Description |
 |----------|-------|-------------|
-| **Rules** | 7 | Contextual coding standards (backend, frontend, infra, code style, etc.) |
-| **Commands** | 16 | Slash commands for builds, tests, linting, deploys, bugs, and specs |
-| **Agents** | 9 | Specialized sub-agents (code reviewer, debugger, tester, terraform, etc.) |
+| **Rules** | 6 | Contextual coding standards (backend, frontend, code style, deployment, etc.) |
+| **Commands** | 15 | Slash commands for builds, tests, linting, deploys, bugs, and specs |
+| **Agents** | 8 | Specialized sub-agents (code reviewer, debugger, tester, etc.) |
 | **Skills** | 3 | Auto-activating assistants (API development, DB migration, security review) |
 | **Templates** | 9 | Structured templates for specs, bugs, and design documents |
 | **MCP Servers** | 3 | Sequential Thinking, Serena (LSP code intelligence), Context7 (library docs) |
@@ -48,13 +48,11 @@ Set up the Claude Code Mastering boilerplate in this project. Follow these steps
 
 2. After copying, ask me the following questions to customize the boilerplate:
    a. "What is your project name?" → Replace all "your-project-" placeholders in .claude/ files
-   b. "What tech stack are you using?" (e.g., Python/FastAPI backend, React frontend, Terraform infra, etc.)
+   b. "What tech stack are you using?" (e.g., Python/FastAPI backend, React frontend, etc.)
       → Remove irrelevant components:
         - No backend? Delete .claude/commands/backend/, remove backend section from .claude/rules/deployment.md
         - No frontend? Delete .claude/commands/frontend/, .claude/rules/frontend.md, .claude/agents/frontend-builder.md
-        - No infrastructure? Delete .claude/commands/infra/, .claude/rules/infrastructure.md, .claude/agents/terraform-planner.md
    c. "What is your preferred communication language?" → Update the language setting in CLAUDE.md (default is Bahasa Indonesia)
-   d. "Do you use AWS? If yes, what are your AWS profile names for dev and prod?" → Replace your-dev-profile and your-prod-profile in .claude/ files. If no AWS, remove infra-related files.
 
 3. After customization, show me a summary of:
    - Which files were copied
@@ -109,7 +107,6 @@ Open `.claude/rules/` and adjust domain-specific rules:
 .claude/rules/
 ├── backend.md          # Backend dev rules (Docker, testing)
 ├── frontend.md         # Frontend dev rules (npm, builds)
-├── infrastructure.md   # Terraform/IaC rules (AWS profiles)
 ├── deployment.md       # Pre-deploy checklists
 ├── documentation.md    # Documentation standards
 ├── code-style.md       # Code style conventions
@@ -118,21 +115,7 @@ Open `.claude/rules/` and adjust domain-specific rules:
 
 > **Tip**: Files in `rules/` can have `paths:` frontmatter to scope them to specific directories. Add this back if you want rules to only trigger for certain folders (e.g., `paths: ["backend/**/*"]`).
 
-**3. Configure infrastructure placeholders**
-
-Search for `your-` placeholders and replace with your actual values:
-
-```bash
-# Find all placeholders
-grep -r "your-" .claude/
-```
-
-Common placeholders to replace:
-- `your-dev-profile` → your AWS dev profile name
-- `your-prod-profile` → your AWS production profile name
-- `your-project-` → your project name prefix (for ECS clusters, CloudWatch, etc.)
-
-**4. Verify MCP servers work**
+**3. Verify MCP servers work**
 
 ```bash
 # Start Claude Code — MCP servers auto-initialize
@@ -144,7 +127,7 @@ claude
 # Context7 — ask Claude about any library docs
 ```
 
-**5. (Optional) Set up Serena project**
+**4. (Optional) Set up Serena project**
 
 If you want Serena's full LSP-powered code intelligence:
 
@@ -164,7 +147,6 @@ your-project/
 │   │   ├── code-reviewer.md       # Code quality reviews
 │   │   ├── debugger.md            # Bug investigation
 │   │   ├── frontend-builder.md    # Frontend build & lint fixes
-│   │   ├── terraform-planner.md   # Infrastructure planning
 │   │   ├── spec-design-validator.md
 │   │   ├── spec-requirements-validator.md
 │   │   ├── spec-task-executor.md
@@ -181,10 +163,6 @@ your-project/
 │   │   │   ├── lint.md            # /frontend:lint
 │   │   │   ├── test.md            # /frontend:test
 │   │   │   └── storybook.md       # /frontend:storybook
-│   │   ├── infra/
-│   │   │   ├── plan.md            # /infra:plan
-│   │   │   ├── apply.md           # /infra:apply
-│   │   │   └── status.md          # /infra:status
 │   │   ├── deploy-check.md        # /deploy-check
 │   │   ├── bug-create.md          # /bug-create
 │   │   ├── bug-analyze.md         # /bug-analyze
@@ -200,7 +178,6 @@ your-project/
 │   ├── rules/                     # Contextual coding rules
 │   │   ├── backend.md
 │   │   ├── frontend.md
-│   │   ├── infrastructure.md
 │   │   ├── deployment.md
 │   │   ├── documentation.md
 │   │   ├── code-style.md
@@ -244,9 +221,6 @@ Run these inside Claude Code:
 | `/frontend:lint` | Lint and format frontend code |
 | `/frontend:test` | Run frontend tests with Vitest |
 | `/frontend:storybook` | Start Storybook dev server |
-| `/infra:plan` | Run Terraform plan for an environment |
-| `/infra:apply` | Apply Terraform changes (with confirmation) |
-| `/infra:status` | Check infrastructure status |
 | `/deploy-check` | Run all pre-deployment checks |
 
 ### Bug Workflow
@@ -341,7 +315,6 @@ Specialized sub-agents that Claude delegates to:
 | `code-reviewer` | Sonnet | Review code quality, security, performance |
 | `debugger` | Sonnet | Track down bugs across the full stack |
 | `frontend-builder` | Sonnet | Fix build errors, TypeScript issues, lint problems |
-| `terraform-planner` | Sonnet | Analyze Terraform plans, evaluate change impacts |
 | `spec-*-validator` | Sonnet | Validate spec documents for quality |
 | `spec-task-executor` | Sonnet | Execute individual spec tasks |
 
@@ -419,7 +392,6 @@ Your skill's specialized knowledge and instructions...
 If your project doesn't have certain layers, simply delete the corresponding files:
 
 - **No backend?** Delete `commands/backend/`, remove backend section from `rules/deployment.md`
-- **No infrastructure?** Delete `commands/infra/`, `rules/infrastructure.md`, `agents/terraform-planner.md`
 - **No frontend?** Delete `commands/frontend/`, `rules/frontend.md`, `agents/frontend-builder.md`
 
 ## ![Requirements](https://img.shields.io/badge/Requirements_by_Stack-4f46e5?style=for-the-badge)
@@ -428,7 +400,6 @@ If your project doesn't have certain layers, simply delete the corresponding fil
 |-------|---------------|
 | **Backend (Python)** | Docker, Docker Compose, uv, Python 3.11+ |
 | **Frontend (Node)** | Node.js 18+, npm |
-| **Infrastructure** | Terraform, AWS CLI, Make |
 | **MCP: Serena** | Python 3.11+, uvx |
 | **MCP: Sequential Thinking** | Node.js 18+, npx |
 | **MCP: Context7** | Node.js 18+, npx |
