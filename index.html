@@ -1,0 +1,1652 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Claude Code Mastering — Documentation</title>
+  <meta name="description" content="A batteries-included .claude/ configuration boilerplate for Claude Code. Drop it into any project and get a structured, opinionated development workflow." />
+  <meta name="theme-color" content="#d97757" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚡</text></svg>" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ===== CSS Reset & Variables ===== */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg-primary: #1a1915;
+      --bg-secondary: #262624;
+      --bg-tertiary: #30302e;
+      --bg-code: #141310;
+      --accent: #d97757;
+      --accent-hover: #e08b6d;
+      --accent-glow: rgba(217, 119, 87, 0.15);
+      --text-primary: #f5f4ee;
+      --text-secondary: #c3c0b6;
+      --text-tertiary: #8a8780;
+      --border: #3a3935;
+      --border-light: #4d4a44;
+      --green: #22c55e;
+      --blue: #3b82f6;
+      --orange: #f97316;
+      --red: #ef4444;
+      --yellow: #eab308;
+      --cyan: #06b6d4;
+      --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      --font-mono: 'JetBrains Mono', Consolas, 'Courier New', monospace;
+      --sidebar-width: 260px;
+      --radius: 12px;
+      --radius-sm: 8px;
+    }
+
+    html { scroll-behavior: smooth; scroll-padding-top: 24px; }
+
+    body {
+      font-family: var(--font-sans);
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      line-height: 1.7;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      overflow-x: hidden;
+    }
+
+    a { color: var(--accent-hover); text-decoration: none; transition: color 0.2s; }
+    a:hover { color: #a78bfa; }
+
+    img { max-width: 100%; height: auto; display: block; }
+
+    /* ===== Sidebar ===== */
+    .sidebar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: var(--sidebar-width);
+      height: 100vh;
+      background: var(--bg-secondary);
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      z-index: 100;
+      overflow: hidden;
+    }
+
+    .sidebar-header {
+      padding: 1.25rem 1.25rem 1rem;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-shrink: 0;
+    }
+
+    .sidebar-logo {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-weight: 700;
+      font-size: 0.92rem;
+      color: var(--text-primary);
+      text-decoration: none;
+    }
+
+    .sidebar-logo:hover { color: var(--text-primary); }
+
+    .sidebar-logo svg { width: 24px; height: 24px; flex-shrink: 0; }
+
+    .sidebar-close {
+      display: none;
+      background: none;
+      border: none;
+      color: var(--text-secondary);
+      cursor: pointer;
+      padding: 4px;
+      line-height: 0;
+    }
+
+    .sidebar-close svg { width: 20px; height: 20px; }
+
+    .sidebar-nav {
+      flex: 1;
+      overflow-y: auto;
+      padding: 0.75rem 0;
+      scrollbar-width: thin;
+      scrollbar-color: var(--border) transparent;
+    }
+
+    .sidebar-nav::-webkit-scrollbar { width: 4px; }
+    .sidebar-nav::-webkit-scrollbar-track { background: transparent; }
+    .sidebar-nav::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+
+    .nav-group { margin-bottom: 0.5rem; }
+
+    .nav-group-title {
+      font-size: 0.68rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--text-tertiary);
+      padding: 0.5rem 1.25rem 0.35rem;
+      user-select: none;
+    }
+
+    .nav-item {
+      display: block;
+      font-size: 0.84rem;
+      color: var(--text-secondary);
+      padding: 0.35rem 1.25rem 0.35rem 1.25rem;
+      border-left: 2px solid transparent;
+      transition: color 0.15s, border-color 0.15s, background 0.15s;
+      text-decoration: none;
+      line-height: 1.5;
+    }
+
+    .nav-item:hover {
+      color: var(--text-primary);
+      background: var(--bg-tertiary);
+    }
+
+    .nav-item.active {
+      color: var(--accent-hover);
+      border-left-color: var(--accent);
+      background: var(--accent-glow);
+    }
+
+    .sidebar-footer {
+      padding: 0.75rem 1.25rem;
+      border-top: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+
+    .sidebar-github {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      font-size: 0.82rem;
+      color: var(--text-secondary);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .sidebar-github:hover { color: var(--text-primary); }
+    .sidebar-github svg { width: 16px; height: 16px; }
+
+    /* ===== Mobile Header ===== */
+    .mobile-header {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 52px;
+      background: rgba(10, 10, 11, 0.92);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      z-index: 90;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 1rem;
+    }
+
+    .mobile-header-left {
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+    }
+
+    .hamburger {
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 4px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .hamburger span {
+      display: block;
+      width: 20px;
+      height: 2px;
+      background: var(--text-primary);
+      border-radius: 2px;
+      transition: transform 0.3s, opacity 0.3s;
+    }
+
+    .mobile-title {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .mobile-github {
+      display: inline-flex;
+      align-items: center;
+      color: var(--text-secondary);
+      padding: 4px;
+    }
+
+    .mobile-github svg { width: 20px; height: 20px; }
+
+    /* ===== Sidebar Overlay ===== */
+    .sidebar-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.6);
+      z-index: 95;
+    }
+
+    .sidebar-overlay.open { display: block; }
+
+    /* ===== Content Area ===== */
+    .content {
+      margin-left: var(--sidebar-width);
+      min-height: 100vh;
+    }
+
+    .content-container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 2.5rem 2rem 4rem;
+    }
+
+    /* ===== Docs Typography ===== */
+    .content-container h1 {
+      font-size: 2rem;
+      font-weight: 800;
+      line-height: 1.2;
+      margin-bottom: 0.75rem;
+      letter-spacing: -0.02em;
+    }
+
+    .lead {
+      font-size: 1.1rem;
+      color: var(--text-secondary);
+      line-height: 1.7;
+      margin-bottom: 2.5rem;
+    }
+
+    .content-container h2 {
+      font-size: 1.45rem;
+      font-weight: 700;
+      line-height: 1.3;
+      margin-top: 3rem;
+      margin-bottom: 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .content-container h3 {
+      font-size: 1.15rem;
+      font-weight: 600;
+      line-height: 1.4;
+      margin-top: 2rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .content-container h4 {
+      font-size: 1rem;
+      font-weight: 600;
+      margin-top: 1.5rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .content-container > p,
+    .content-container > ul,
+    .content-container > ol {
+      font-size: 0.95rem;
+      color: var(--text-secondary);
+      line-height: 1.7;
+      margin-bottom: 1rem;
+    }
+
+    .content-container ul { list-style: disc; padding-left: 1.5rem; }
+    .content-container ol { list-style: decimal; padding-left: 1.5rem; }
+    .content-container li { margin-bottom: 0.35rem; }
+
+    .content-container section {
+      padding: 0;
+    }
+
+    .content-container section + section {
+      margin-top: 1rem;
+    }
+
+    /* ===== Inline Code ===== */
+    p code, li code, td code, h3 code, h4 code {
+      font-family: var(--font-mono);
+      font-size: 0.85em;
+      background: var(--bg-code);
+      padding: 0.15rem 0.4rem;
+      border-radius: 4px;
+      color: var(--accent-hover);
+    }
+
+    /* ===== Code Blocks ===== */
+    .code-block {
+      background: var(--bg-code);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      margin-bottom: 1.25rem;
+    }
+
+    .code-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.65rem 1rem;
+      background: var(--bg-tertiary);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .code-lang {
+      font-size: 0.78rem;
+      font-family: var(--font-mono);
+      color: var(--text-tertiary);
+      font-weight: 500;
+    }
+
+    .copy-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      padding: 0.3rem 0.7rem;
+      background: transparent;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      color: var(--text-secondary);
+      font-size: 0.75rem;
+      font-family: var(--font-sans);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .copy-btn:hover { border-color: var(--border-light); color: var(--text-primary); }
+    .copy-btn.copied { border-color: var(--green); color: var(--green); }
+    .copy-btn svg { width: 14px; height: 14px; }
+
+    .code-block pre {
+      padding: 1.25rem;
+      overflow-x: auto;
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      line-height: 1.7;
+      color: var(--text-secondary);
+    }
+
+    .code-block code {
+      font-family: var(--font-mono);
+    }
+
+    /* ===== Callout ===== */
+    .callout {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--accent);
+      border-radius: var(--radius-sm);
+      padding: 1rem 1.25rem;
+      margin: 1.25rem 0;
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+
+    .callout strong { color: var(--text-primary); }
+    .callout.tip { border-left-color: var(--green); }
+    .callout.warning { border-left-color: var(--orange); }
+    .callout.info { border-left-color: var(--blue); }
+
+    /* ===== Tables ===== */
+    .table-wrapper {
+      overflow-x: auto;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      margin-bottom: 1.25rem;
+    }
+
+    .table-wrapper table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.9rem;
+    }
+
+    .table-wrapper th {
+      background: var(--bg-tertiary);
+      padding: 0.85rem 1.15rem;
+      text-align: left;
+      font-weight: 600;
+      font-size: 0.82rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-secondary);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .table-wrapper td {
+      padding: 0.8rem 1.15rem;
+      border-bottom: 1px solid var(--border);
+      color: var(--text-secondary);
+    }
+
+    .table-wrapper tr:last-child td { border-bottom: none; }
+
+    .table-wrapper code {
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      color: var(--accent-hover);
+      background: var(--bg-code);
+      padding: 0.15rem 0.45rem;
+      border-radius: 4px;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 0.15rem 0.55rem;
+      border-radius: 999px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+
+    .badge-purple { background: rgba(217, 119, 87, 0.15); color: var(--accent-hover); }
+    .badge-blue { background: rgba(59, 130, 246, 0.15); color: var(--blue); }
+
+    /* ===== File Tree ===== */
+    .file-tree {
+      background: var(--bg-code);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      font-family: var(--font-mono);
+      font-size: 0.82rem;
+      line-height: 1.8;
+      color: var(--text-secondary);
+      overflow-x: auto;
+      white-space: pre;
+      margin-bottom: 1.25rem;
+    }
+
+    .file-tree .folder { color: var(--accent-hover); }
+    .file-tree .comment { color: var(--text-tertiary); }
+
+    /* ===== Workflow Flow ===== */
+    .workflow-flow {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      margin-bottom: 1rem;
+    }
+
+    .workflow-flow code {
+      font-family: var(--font-mono);
+      font-size: 0.82rem;
+      background: var(--bg-code);
+      border: 1px solid var(--border);
+      padding: 0.4rem 0.75rem;
+      border-radius: 6px;
+      color: var(--accent-hover);
+    }
+
+    .workflow-flow .arrow {
+      color: var(--text-tertiary);
+      font-size: 1.1rem;
+    }
+
+    /* ===== Setup Steps ===== */
+    .setup-step {
+      margin-bottom: 2rem;
+    }
+
+    .setup-step h3 {
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+      margin-top: 1.5rem;
+    }
+
+    .step-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      background: var(--accent);
+      color: #fff;
+      font-size: 0.78rem;
+      font-weight: 700;
+      margin-right: 0.5rem;
+    }
+
+    .setup-text { font-size: 0.92rem; color: var(--text-secondary); line-height: 1.7; margin-bottom: 1rem; }
+    .setup-text ul { list-style: disc; padding-left: 1.5rem; }
+    .setup-text li { margin-bottom: 0.35rem; }
+
+    /* ===== Prerequisites ===== */
+    .prerequisites {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+
+    .prereq-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 1.25rem;
+    }
+
+    .prereq-card h4 { font-size: 0.95rem; margin-bottom: 0.35rem; margin-top: 0; }
+    .prereq-card p { font-size: 0.82rem; color: var(--text-secondary); margin-bottom: 0.25rem; }
+    .prereq-card a { font-size: 0.82rem; }
+
+    /* ===== FAQ ===== */
+    details {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      margin-bottom: 0.75rem;
+      overflow: hidden;
+    }
+
+    summary {
+      padding: 1rem 1.25rem;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 0.95rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      list-style: none;
+      transition: background 0.2s;
+    }
+
+    summary:hover { background: var(--bg-tertiary); }
+    summary::-webkit-details-marker { display: none; }
+
+    summary::after {
+      content: '+';
+      font-size: 1.25rem;
+      color: var(--text-tertiary);
+      font-weight: 400;
+      transition: transform 0.2s;
+    }
+
+    details[open] summary::after { content: '\2212'; }
+
+    details .faq-answer {
+      padding: 0 1.25rem 1.25rem;
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+      line-height: 1.7;
+    }
+
+    /* ===== Remove list ===== */
+    .remove-list { list-style: none; padding: 0; margin-top: 1rem; }
+    .remove-list li {
+      position: relative;
+      padding-left: 1.5rem;
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+      margin-bottom: 0.5rem;
+    }
+    .remove-list li::before {
+      content: '\2192';
+      position: absolute;
+      left: 0;
+      color: var(--text-tertiary);
+    }
+
+    /* ===== Overview Callout ===== */
+    .overview-stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.75rem;
+      margin: 1.25rem 0;
+    }
+
+    .overview-stat {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 1rem;
+      text-align: center;
+    }
+
+    .overview-stat-num {
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: var(--accent);
+      line-height: 1;
+      margin-bottom: 0.2rem;
+    }
+
+    .overview-stat-label {
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    /* ===== How It Works Steps ===== */
+    .how-steps {
+      counter-reset: step;
+      padding: 0;
+      list-style: none;
+      margin: 1.25rem 0;
+    }
+
+    .how-steps li {
+      counter-increment: step;
+      position: relative;
+      padding-left: 2.5rem;
+      margin-bottom: 1.25rem;
+      font-size: 0.95rem;
+      color: var(--text-secondary);
+    }
+
+    .how-steps li::before {
+      content: counter(step);
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: var(--accent);
+      color: #fff;
+      font-weight: 700;
+      font-size: 0.78rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .how-steps li strong {
+      color: var(--text-primary);
+      display: block;
+      margin-bottom: 0.15rem;
+    }
+
+    /* ===== Spec Steps (simplified) ===== */
+    .spec-steps-list {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0.75rem;
+      margin: 1rem 0 1.25rem;
+    }
+
+    .spec-step-item {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 0.85rem 1rem;
+      display: flex;
+      align-items: flex-start;
+      gap: 0.65rem;
+    }
+
+    .spec-step-num {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: var(--accent);
+      color: #fff;
+      font-size: 0.7rem;
+      font-weight: 700;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+
+    .spec-step-text strong {
+      display: block;
+      font-size: 0.88rem;
+      color: var(--text-primary);
+      margin-bottom: 0.1rem;
+    }
+
+    .spec-step-text span {
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+    }
+
+    /* ===== MCP Server sections ===== */
+    .mcp-server {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .mcp-server h4 {
+      font-size: 1.05rem;
+      margin-top: 0;
+      margin-bottom: 0.15rem;
+    }
+
+    .mcp-server-meta {
+      font-size: 0.78rem;
+      color: var(--text-tertiary);
+      font-family: var(--font-mono);
+      margin-bottom: 0.75rem;
+    }
+
+    .mcp-server-meta a { color: var(--accent-hover); font-size: 0.78rem; }
+
+    .mcp-server > p {
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+      margin-bottom: 0.75rem;
+      line-height: 1.6;
+    }
+
+    .mcp-server ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .mcp-server li {
+      position: relative;
+      padding-left: 1.15rem;
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      margin-bottom: 0.35rem;
+      line-height: 1.5;
+    }
+
+    .mcp-server li::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0.55rem;
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: var(--accent);
+    }
+
+    /* ===== Footer ===== */
+    .footer {
+      border-top: 1px solid var(--border);
+      padding: 2rem 0;
+      text-align: center;
+      margin-left: var(--sidebar-width);
+    }
+
+    .footer p {
+      font-size: 0.82rem;
+      color: var(--text-tertiary);
+      margin-bottom: 0.25rem;
+    }
+
+    .footer a { color: var(--text-secondary); }
+    .footer a:hover { color: var(--text-primary); }
+
+    /* ===== Responsive ===== */
+    @media (max-width: 1024px) {
+      .prerequisites { grid-template-columns: 1fr; }
+      .overview-stats { grid-template-columns: repeat(3, 1fr); }
+    }
+
+    @media (max-width: 768px) {
+      .sidebar {
+        transform: translateX(-100%);
+        transition: transform 0.3s ease;
+        z-index: 100;
+      }
+
+      .sidebar.open {
+        transform: translateX(0);
+      }
+
+      .sidebar-close { display: block; }
+
+      .mobile-header { display: flex; }
+
+      .content {
+        margin-left: 0;
+        padding-top: 52px;
+      }
+
+      .content-container {
+        padding: 1.5rem 1.25rem 3rem;
+      }
+
+      .content-container h1 { font-size: 1.65rem; }
+      .content-container h2 { font-size: 1.25rem; }
+
+      .footer { margin-left: 0; }
+
+      .overview-stats { grid-template-columns: repeat(3, 1fr); }
+      .spec-steps-list { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 480px) {
+      .overview-stats { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+
+<body>
+
+<!-- ===== Sidebar ===== -->
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-header">
+    <a href="#" class="sidebar-logo">
+      <svg viewBox="0 0 28 28" fill="none"><rect width="28" height="28" rx="6" fill="#d97757"/><path d="M8 14l4 4 8-8" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Claude Code Mastering
+    </a>
+    <button class="sidebar-close" id="sidebarClose" aria-label="Close sidebar">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+    </button>
+  </div>
+
+  <nav class="sidebar-nav">
+    <div class="nav-group">
+      <div class="nav-group-title">Getting Started</div>
+      <a href="#overview" class="nav-item active">Overview</a>
+      <a href="#how-it-works" class="nav-item">How It Works</a>
+      <a href="#setup" class="nav-item">One-Click Setup</a>
+      <a href="#manual-setup" class="nav-item">Manual Setup</a>
+      <a href="#project-structure" class="nav-item">Project Structure</a>
+    </div>
+    <div class="nav-group">
+      <div class="nav-group-title">Features</div>
+      <a href="#slash-commands" class="nav-item">Slash Commands</a>
+      <a href="#bug-workflow" class="nav-item">Bug Workflow</a>
+      <a href="#spec-driven" class="nav-item">Spec-Driven Dev</a>
+    </div>
+    <div class="nav-group">
+      <div class="nav-group-title">MCP Servers</div>
+      <a href="#mcp-servers" class="nav-item">Overview & Why 3</a>
+    </div>
+    <div class="nav-group">
+      <div class="nav-group-title">Agents & Customization</div>
+      <a href="#agents" class="nav-item">Custom Agents</a>
+      <a href="#customization" class="nav-item">Customization Guide</a>
+    </div>
+    <div class="nav-group">
+      <div class="nav-group-title">Reference</div>
+      <a href="#requirements" class="nav-item">Requirements</a>
+      <a href="#faq" class="nav-item">FAQ</a>
+    </div>
+  </nav>
+
+  <div class="sidebar-footer">
+    <a href="https://github.com/yusupsupriyadi/claude-code-mastering" target="_blank" rel="noopener" class="sidebar-github">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+      View on GitHub
+    </a>
+  </div>
+</aside>
+
+<!-- ===== Mobile Header ===== -->
+<header class="mobile-header" id="mobileHeader">
+  <div class="mobile-header-left">
+    <button class="hamburger" id="hamburger" aria-label="Open sidebar">
+      <span></span><span></span><span></span>
+    </button>
+    <span class="mobile-title">Claude Code Mastering</span>
+  </div>
+  <a href="https://github.com/yusupsupriyadi/claude-code-mastering" target="_blank" rel="noopener" class="mobile-github" aria-label="GitHub">
+    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+  </a>
+</header>
+
+<!-- ===== Sidebar Overlay (mobile) ===== -->
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+<!-- ===== Main Content ===== -->
+<main class="content">
+  <div class="content-container">
+
+    <!-- ===== Overview ===== -->
+    <section id="overview">
+      <h1>Claude Code Mastering</h1>
+      <p class="lead">A batteries-included <code>.claude/</code> configuration boilerplate for Claude Code. Drop it into any project and get a structured, opinionated development workflow powered by MCP tools, slash commands, custom agents, and more.</p>
+
+      <div class="overview-stats">
+        <div class="overview-stat">
+          <div class="overview-stat-num">6</div>
+          <div class="overview-stat-label">Rules</div>
+        </div>
+        <div class="overview-stat">
+          <div class="overview-stat-num">21</div>
+          <div class="overview-stat-label">Commands</div>
+        </div>
+        <div class="overview-stat">
+          <div class="overview-stat-num">8</div>
+          <div class="overview-stat-label">Agents</div>
+        </div>
+        <div class="overview-stat">
+          <div class="overview-stat-num">3</div>
+          <div class="overview-stat-label">Skills</div>
+        </div>
+        <div class="overview-stat">
+          <div class="overview-stat-num">9</div>
+          <div class="overview-stat-label">Templates</div>
+        </div>
+        <div class="overview-stat">
+          <div class="overview-stat-num">3</div>
+          <div class="overview-stat-label">MCP Servers</div>
+        </div>
+      </div>
+
+      <div class="callout info">
+        <strong>Open Source</strong> — Star us on <a href="https://github.com/yusupsupriyadi/claude-code-mastering" target="_blank" rel="noopener">GitHub</a>. Contributions welcome!
+      </div>
+    </section>
+
+    <!-- ===== How It Works ===== -->
+    <section id="how-it-works">
+      <h2>How It Works</h2>
+      <p>Every command you give flows through three MCP servers working together.</p>
+
+      <img src="https://github.com/user-attachments/assets/3ffa1fe6-2e81-4eb1-b4b8-c8a8642b7f61" alt="Claude Code Mastering Workflow Diagram" width="1289" height="553" loading="lazy" style="border: 1px solid var(--border); border-radius: var(--radius); margin: 1.25rem 0;" />
+
+      <ol class="how-steps">
+        <li>
+          <strong>You Give a Command</strong>
+          A task, bug fix, feature request, or question — anything you need Claude to do.
+        </li>
+        <li>
+          <strong>Sequential Thinking Analyzes</strong>
+          Breaks down the problem step-by-step, consulting Context7 for up-to-date library docs when needed.
+        </li>
+        <li>
+          <strong>Serena Executes</strong>
+          Loads previous context from memory, navigates and edits code with LSP-powered tools, then saves new context.
+        </li>
+      </ol>
+    </section>
+
+    <!-- ===== One-Click Setup ===== -->
+    <section id="setup">
+      <h2>One-Click Setup</h2>
+      <p>The fastest way to get started. Copy the prompt below and paste it into Claude Code inside your project directory.</p>
+
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-lang">prompt</span>
+          <button class="copy-btn" data-target="oneclick-code">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+            Copy
+          </button>
+        </div>
+        <pre id="oneclick-code"><code>Set up the Claude Code Mastering boilerplate in this project. Follow these steps:
+
+1. Clone the boilerplate repo to a temp directory and copy the config files:
+   - git clone https://github.com/yusupsupriyadi/claude-code-mastering.git /tmp/claude-code-mastering
+   - Copy the .claude/ folder, .mcp.json, and CLAUDE.md from /tmp/claude-code-mastering into this project root
+   - Remove the temp clone: rm -rf /tmp/claude-code-mastering
+
+2. After copying, ask me the following questions to customize the boilerplate:
+   a. "What is your project name?" → Replace all "your-project-" placeholders in .claude/ files
+   b. "What tech stack are you using?" (e.g., Python/FastAPI backend, React frontend, etc.)
+      → Remove irrelevant components:
+        - No backend? Delete .claude/commands/backend/, remove backend section from .claude/rules/deployment.md
+        - No frontend? Delete .claude/commands/frontend/, .claude/rules/frontend.md, .claude/agents/frontend-builder.md
+   c. "What is your preferred communication language?" → Update the language setting in CLAUDE.md (default is Bahasa Indonesia)
+
+3. After customization, show me a summary of:
+   - Which files were copied
+   - Which components were removed (if any)
+   - Which placeholders were replaced
+   - What slash commands are available (list all /command-name)
+
+4. Finally, verify the setup by checking that .claude/ folder exists with the correct structure.</code></pre>
+      </div>
+
+      <div class="callout info">
+        <strong>Note:</strong> This works with Claude Code CLI. For other AI assistants, you may need to adjust the git/file commands to match their tool capabilities.
+      </div>
+    </section>
+
+    <!-- ===== Manual Setup ===== -->
+    <section id="manual-setup">
+      <h2>Manual Setup</h2>
+      <p>For those who prefer full control over the installation process.</p>
+
+      <h3>Prerequisites</h3>
+      <div class="prerequisites">
+        <div class="prereq-card">
+          <h4>Claude Code CLI</h4>
+          <p>Installed and authenticated</p>
+          <a href="https://docs.anthropic.com/en/docs/claude-code" target="_blank" rel="noopener">docs.anthropic.com &rarr;</a>
+        </div>
+        <div class="prereq-card">
+          <h4>Node.js 18+</h4>
+          <p>Required for MCP servers</p>
+          <a href="https://nodejs.org/" target="_blank" rel="noopener">nodejs.org &rarr;</a>
+        </div>
+        <div class="prereq-card">
+          <h4>Python 3.11+ with uvx</h4>
+          <p>Required for Serena MCP</p>
+          <a href="https://docs.astral.sh/uv/" target="_blank" rel="noopener">docs.astral.sh/uv &rarr;</a>
+        </div>
+      </div>
+
+      <!-- Step 1 -->
+      <div class="setup-step">
+        <h3><span class="step-badge">1</span> Clone or copy into your project</h3>
+        <div class="code-block">
+          <div class="code-header">
+            <span class="code-lang">bash</span>
+            <button class="copy-btn" data-target="setup-step1">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+              Copy
+            </button>
+          </div>
+          <pre id="setup-step1"><code># Option A: Clone as a starting point for a new project
+git clone https://github.com/yusupsupriyadi/claude-code-mastering.git my-project
+cd my-project
+rm -rf .git && git init
+
+# Option B: Copy into an existing project
+git clone https://github.com/yusupsupriyadi/claude-code-mastering.git /tmp/ccm
+cp -r /tmp/ccm/.claude your-project/.claude
+cp /tmp/ccm/.mcp.json your-project/.mcp.json
+cp /tmp/ccm/CLAUDE.md your-project/CLAUDE.md
+rm -rf /tmp/ccm</code></pre>
+        </div>
+      </div>
+
+      <!-- Step 2 -->
+      <div class="setup-step">
+        <h3><span class="step-badge">2</span> Customize for your project</h3>
+        <div class="setup-text">
+          <p>Open <code>CLAUDE.md</code> and review the rules. The defaults work for most full-stack projects. Key things to customize:</p>
+          <ul>
+            <li><strong>Communication language</strong> — defaults to Bahasa Indonesia, change if needed</li>
+            <li><strong>Git rules</strong> — review commit message conventions</li>
+            <li><strong>MCP tool preferences</strong> — adjust workflow to your team's style</li>
+          </ul>
+        </div>
+        <div class="code-block">
+          <div class="code-header">
+            <span class="code-lang">.claude/rules/</span>
+            <button class="copy-btn" data-target="setup-step2">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+              Copy
+            </button>
+          </div>
+          <pre id="setup-step2"><code>.claude/rules/
+├── backend.md          # Backend dev rules (Docker, testing)
+├── frontend.md         # Frontend dev rules (npm, builds)
+├── deployment.md       # Pre-deploy checklists
+├── documentation.md    # Documentation standards
+├── code-style.md       # Code style conventions
+└── planning.md         # Task planning requirements</code></pre>
+        </div>
+        <div class="callout tip">
+          <strong>Tip:</strong> Files in <code>rules/</code> can have <code>paths:</code> frontmatter to scope them to specific directories. Add this back if you want rules to only trigger for certain folders (e.g., <code>paths: ["backend/**/*"]</code>).
+        </div>
+      </div>
+
+      <!-- Step 3 -->
+      <div class="setup-step">
+        <h3><span class="step-badge">3</span> Verify MCP servers work</h3>
+        <div class="code-block">
+          <div class="code-header">
+            <span class="code-lang">bash</span>
+            <button class="copy-btn" data-target="setup-step3">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+              Copy
+            </button>
+          </div>
+          <pre id="setup-step3"><code># Start Claude Code — MCP servers auto-initialize
+claude
+
+# Inside Claude Code, test each MCP:
+# Sequential Thinking — automatic, used on every request
+# Serena — type: /backend:test or ask Claude to analyze code
+# Context7 — ask Claude about any library docs</code></pre>
+        </div>
+      </div>
+
+      <!-- Step 4 -->
+      <div class="setup-step">
+        <h3><span class="step-badge">4</span> (Optional) Set up Serena project</h3>
+        <div class="code-block">
+          <div class="code-header">
+            <span class="code-lang">bash</span>
+            <button class="copy-btn" data-target="setup-step4">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+              Copy
+            </button>
+          </div>
+          <pre id="setup-step4"><code># Inside Claude Code, run:
+# > activate_project with your project path
+# > onboarding to index the codebase</code></pre>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== Project Structure ===== -->
+    <section id="project-structure">
+      <h2>Project Structure</h2>
+      <p>A well-organized directory layout designed for maximum Claude Code effectiveness.</p>
+
+      <div class="file-tree">your-project/
+├── <span class="folder">.claude/</span>
+│   ├── <span class="folder">agents/</span>                    <span class="comment"># Specialized sub-agents</span>
+│   │   ├── backend-tester.md      <span class="comment"># Test execution & analysis</span>
+│   │   ├── code-reviewer.md       <span class="comment"># Code quality reviews</span>
+│   │   ├── debugger.md            <span class="comment"># Bug investigation</span>
+│   │   ├── frontend-builder.md    <span class="comment"># Frontend build & lint fixes</span>
+│   │   ├── spec-design-validator.md
+│   │   ├── spec-requirements-validator.md
+│   │   ├── spec-task-executor.md
+│   │   └── spec-task-validator.md
+│   │
+│   ├── <span class="folder">commands/</span>                  <span class="comment"># Slash commands (/command-name)</span>
+│   │   ├── <span class="folder">backend/</span>
+│   │   │   ├── lint.md            <span class="comment"># /backend:lint</span>
+│   │   │   ├── test.md            <span class="comment"># /backend:test</span>
+│   │   │   ├── migrate.md         <span class="comment"># /backend:migrate</span>
+│   │   │   └── security.md        <span class="comment"># /backend:security</span>
+│   │   ├── <span class="folder">frontend/</span>
+│   │   │   ├── build.md           <span class="comment"># /frontend:build</span>
+│   │   │   ├── lint.md            <span class="comment"># /frontend:lint</span>
+│   │   │   ├── test.md            <span class="comment"># /frontend:test</span>
+│   │   │   └── storybook.md       <span class="comment"># /frontend:storybook</span>
+│   │   ├── deploy-check.md        <span class="comment"># /deploy-check</span>
+│   │   ├── git-add-commit.md      <span class="comment"># /git-add-commit</span>
+│   │   ├── git-pull-request.md    <span class="comment"># /git-pull-request</span>
+│   │   ├── bug-create.md          <span class="comment"># /bug-create</span>
+│   │   ├── bug-analyze.md         <span class="comment"># /bug-analyze</span>
+│   │   ├── bug-fix.md             <span class="comment"># /bug-fix</span>
+│   │   ├── bug-verify.md          <span class="comment"># /bug-verify</span>
+│   │   ├── bug-status.md          <span class="comment"># /bug-status</span>
+│   │   ├── spec-create.md         <span class="comment"># /spec-create</span>
+│   │   ├── spec-execute.md        <span class="comment"># /spec-execute</span>
+│   │   ├── spec-list.md           <span class="comment"># /spec-list</span>
+│   │   ├── spec-status.md         <span class="comment"># /spec-status</span>
+│   │   └── spec-steering-setup.md <span class="comment"># /spec-steering-setup</span>
+│   │
+│   ├── <span class="folder">rules/</span>                     <span class="comment"># Contextual coding rules</span>
+│   │   ├── backend.md
+│   │   ├── frontend.md
+│   │   ├── deployment.md
+│   │   ├── documentation.md
+│   │   ├── code-style.md
+│   │   └── planning.md
+│   │
+│   ├── <span class="folder">skills/</span>                    <span class="comment"># Auto-activating assistants</span>
+│   │   ├── <span class="folder">api-development/</span>
+│   │   ├── <span class="folder">database-migration/</span>
+│   │   └── <span class="folder">security-review/</span>
+│   │
+│   ├── <span class="folder">templates/</span>                 <span class="comment"># Structured document templates</span>
+│   │   ├── bug-report-template.md
+│   │   ├── bug-analysis-template.md
+│   │   ├── bug-verification-template.md
+│   │   ├── requirements-template.md
+│   │   ├── design-template.md
+│   │   ├── tasks-template.md
+│   │   ├── product-template.md
+│   │   ├── tech-template.md
+│   │   └── structure-template.md
+│   │
+│   └── settings.local.json       <span class="comment"># MCP server enablement</span>
+│
+├── .mcp.json                      <span class="comment"># MCP server configuration</span>
+└── CLAUDE.md                      <span class="comment"># Master rules & workflow</span></div>
+    </section>
+
+    <!-- ===== Slash Commands ===== -->
+    <section id="slash-commands">
+      <h2>Slash Commands</h2>
+      <p>Run these inside Claude Code:</p>
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr><th>Command</th><th>Description</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><code>/backend:lint</code></td><td>Run backend code quality checks (black, ruff, mypy)</td></tr>
+            <tr><td><code>/backend:test</code></td><td>Run backend tests via Docker Compose</td></tr>
+            <tr><td><code>/backend:migrate</code></td><td>Create or run database migrations</td></tr>
+            <tr><td><code>/backend:security</code></td><td>Run security checks before deployment</td></tr>
+            <tr><td><code>/frontend:build</code></td><td>Full frontend build with quality checks</td></tr>
+            <tr><td><code>/frontend:lint</code></td><td>Lint and format frontend code</td></tr>
+            <tr><td><code>/frontend:test</code></td><td>Run frontend tests with Vitest</td></tr>
+            <tr><td><code>/frontend:storybook</code></td><td>Start Storybook dev server</td></tr>
+            <tr><td><code>/deploy-check</code></td><td>Run all pre-deployment checks</td></tr>
+            <tr><td><code>/git-add-commit</code></td><td>Stage and commit with structured commit messages</td></tr>
+            <tr><td><code>/git-pull-request</code></td><td>Create pull request using GitHub CLI</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ===== Bug Workflow ===== -->
+    <section id="bug-workflow">
+      <h2>Bug Workflow</h2>
+      <p>A streamlined 4-phase workflow for tracking and resolving bugs:</p>
+      <div class="workflow-flow">
+        <code>/bug-create</code>
+        <span class="arrow">&rarr;</span>
+        <code>/bug-analyze</code>
+        <span class="arrow">&rarr;</span>
+        <code>/bug-fix</code>
+        <span class="arrow">&rarr;</span>
+        <code>/bug-verify</code>
+        <span class="arrow">&rarr;</span>
+        <code>/bug-status</code>
+      </div>
+      <p>Each phase creates structured documents in <code>.claude/bugs/{bug-name}/</code>.</p>
+    </section>
+
+    <!-- ===== Spec-Driven Dev ===== -->
+    <section id="spec-driven">
+      <h2>Spec-Driven Development</h2>
+      <p>A full specification workflow for building features methodically:</p>
+      <div class="spec-steps-list">
+        <div class="spec-step-item">
+          <div class="spec-step-num">1</div>
+          <div class="spec-step-text">
+            <strong>Requirements</strong>
+            <span>User stories with acceptance criteria</span>
+          </div>
+        </div>
+        <div class="spec-step-item">
+          <div class="spec-step-num">2</div>
+          <div class="spec-step-text">
+            <strong>Design</strong>
+            <span>Architecture with Mermaid diagrams</span>
+          </div>
+        </div>
+        <div class="spec-step-item">
+          <div class="spec-step-num">3</div>
+          <div class="spec-step-text">
+            <strong>Tasks</strong>
+            <span>Atomic, agent-friendly implementation tasks</span>
+          </div>
+        </div>
+        <div class="spec-step-item">
+          <div class="spec-step-num">4</div>
+          <div class="spec-step-text">
+            <strong>Execution</strong>
+            <span>Step-by-step implementation with validation</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== MCP Servers ===== -->
+    <section id="mcp-servers">
+      <h2>MCP Servers</h2>
+      <p>Three MCP servers power the intelligent workflow. All are configured in <code>.mcp.json</code> and auto-start with Claude Code.</p>
+
+      <div class="callout" style="margin-bottom: 1.5rem;">
+        <strong>Why only 3?</strong> Every connected MCP server injects its tool definitions into the system prompt, consuming tokens on <em>every single request</em> — even when those tools are never used. These three MCPs are chosen because they are <strong>used on every task</strong>: Sequential Thinking analyzes every request, Serena navigates and edits every codebase, and Context7 looks up every library. No wasted tokens, no idle tools — just what you actually need.
+      </div>
+
+      <div class="mcp-server">
+        <h4>Sequential Thinking</h4>
+        <div class="mcp-server-meta"><a href="https://github.com/modelcontextprotocol/servers/tree/main/src/sequentialthinking" target="_blank" rel="noopener">modelcontextprotocol/servers</a> &middot; MIT</div>
+        <p>An official MCP server that enables dynamic and reflective problem-solving through structured thought sequences with support for revision and branching.</p>
+        <ul>
+          <li>Forces step-by-step analysis before any coding action</li>
+          <li>Supports revising previous thoughts when understanding changes</li>
+          <li>Enables branching into alternative solution paths</li>
+          <li>Tracks thought history for context continuity</li>
+        </ul>
+      </div>
+
+      <div class="mcp-server">
+        <h4>Serena</h4>
+        <div class="mcp-server-meta"><a href="https://github.com/oraios/serena" target="_blank" rel="noopener">oraios/serena</a> &middot; MIT</div>
+        <p>LSP-powered semantic code retrieval and editing. Understands code structure — navigates and edits code the way a developer using an IDE would.</p>
+        <ul>
+          <li>Semantic navigation: symbols, references, type hierarchies</li>
+          <li>Precise editing: replace, insert, rename across the project</li>
+          <li>30+ language support: Python, TypeScript, Java, Go, Rust, C#</li>
+          <li>Built-in memory: persistent context across sessions</li>
+        </ul>
+      </div>
+
+      <div class="mcp-server">
+        <h4>Context7</h4>
+        <div class="mcp-server-meta"><a href="https://github.com/upstash/context7" target="_blank" rel="noopener">upstash/context7</a> &middot; MIT</div>
+        <p>Up-to-date, version-specific library documentation delivered directly to Claude. No more hallucinated or outdated API usage.</p>
+        <ul>
+          <li>Fetches current docs for any library (React, FastAPI, Prisma, etc.)</li>
+          <li>Returns version-specific API references and code examples</li>
+          <li>Eliminates outdated API hallucinations</li>
+          <li>Free to use, no API key required</li>
+        </ul>
+      </div>
+
+      <h3>Optional</h3>
+
+      <div class="mcp-server">
+        <h4>Playwright-MCP</h4>
+        <div class="mcp-server-meta"><a href="https://github.com/microsoft/playwright-mcp" target="_blank" rel="noopener">microsoft/playwright-mcp</a> &middot; Apache-2.0</div>
+        <p>Browser automation powered by Playwright. Enables Claude to interact with web pages — navigate, click, fill forms, take screenshots, and test web applications.</p>
+        <ul>
+          <li>Full browser control: navigate, click, type, screenshot</li>
+          <li>Form filling and file uploads</li>
+          <li>Console and network request monitoring</li>
+          <li>Useful for web testing and UI verification</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ===== Custom Agents ===== -->
+    <section id="agents">
+      <h2>Custom Agents</h2>
+      <p>Specialized sub-agents that Claude delegates to for focused, high-quality work.</p>
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr><th>Agent</th><th>Model</th><th>Purpose</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>backend-tester</code></td>
+              <td><span class="badge badge-purple">Sonnet</span></td>
+              <td>Execute tests, analyze failures, suggest fixes</td>
+            </tr>
+            <tr>
+              <td><code>code-reviewer</code></td>
+              <td><span class="badge badge-purple">Sonnet</span></td>
+              <td>Review code quality, security, performance</td>
+            </tr>
+            <tr>
+              <td><code>debugger</code></td>
+              <td><span class="badge badge-blue">Opus</span></td>
+              <td>Track down bugs across the full stack</td>
+            </tr>
+            <tr>
+              <td><code>frontend-builder</code></td>
+              <td><span class="badge badge-purple">Sonnet</span></td>
+              <td>Fix build errors, TypeScript issues, lint problems</td>
+            </tr>
+            <tr>
+              <td><code>spec-*-validator</code></td>
+              <td><span class="badge badge-purple">Sonnet</span></td>
+              <td>Validate spec documents for quality</td>
+            </tr>
+            <tr>
+              <td><code>spec-task-executor</code></td>
+              <td><span class="badge badge-purple">Sonnet</span></td>
+              <td>Execute individual spec tasks</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ===== Customization Guide ===== -->
+    <section id="customization">
+      <h2>Customization Guide</h2>
+      <p>Extend the boilerplate with your own rules, commands, agents, and skills.</p>
+
+      <h3>Adding New Rules</h3>
+      <p>Create a new <code>.md</code> file in <code>.claude/rules/</code>:</p>
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-lang">markdown</span>
+          <button class="copy-btn" data-target="custom-rules">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+            Copy
+          </button>
+        </div>
+        <pre id="custom-rules"><code># Your Custom Rules
+
+- Follow project naming conventions
+- Write tests for all new features
+- Use dependency injection pattern</code></pre>
+      </div>
+
+      <h3>Adding New Commands</h3>
+      <p>Create a new <code>.md</code> file in <code>.claude/commands/</code>:</p>
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-lang">markdown</span>
+          <button class="copy-btn" data-target="custom-commands">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+            Copy
+          </button>
+        </div>
+        <pre id="custom-commands"><code>---
+description: Run database seed script
+allowed-tools: Bash(docker compose exec:*)
+argument-hint: "[environment: dev|test]"
+---
+
+Seed the database for the specified environment.</code></pre>
+      </div>
+
+      <h3>Adding New Agents</h3>
+      <p>Create a new <code>.md</code> file in <code>.claude/agents/</code>:</p>
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-lang">markdown</span>
+          <button class="copy-btn" data-target="custom-agents">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+            Copy
+          </button>
+        </div>
+        <pre id="custom-agents"><code>---
+name: my-agent
+description: What this agent does
+model: sonnet
+tools: [Read, Grep, Bash(specific:*)]
+---
+
+## Agent Instructions
+
+Your detailed instructions here...</code></pre>
+      </div>
+
+      <h3>Adding New Skills</h3>
+      <p>Create a new directory in <code>.claude/skills/</code> with a <code>SKILL.md</code>:</p>
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-lang">markdown</span>
+          <button class="copy-btn" data-target="custom-skills">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+            Copy
+          </button>
+        </div>
+        <pre id="custom-skills"><code>---
+name: my-skill
+description: Auto-activates when [trigger]
+allowed-tools: Read, Write, Grep
+---
+
+## Skill Instructions
+
+Your skill's specialized knowledge...</code></pre>
+      </div>
+
+      <h3>Removing Unused Components</h3>
+      <ul class="remove-list">
+        <li><strong>No backend?</strong> Delete <code>commands/backend/</code>, remove backend section from <code>rules/deployment.md</code></li>
+        <li><strong>No frontend?</strong> Delete <code>commands/frontend/</code>, <code>rules/frontend.md</code>, <code>agents/frontend-builder.md</code></li>
+      </ul>
+    </section>
+
+    <!-- ===== Requirements ===== -->
+    <section id="requirements">
+      <h2>Requirements</h2>
+      <p>Tools needed for each stack component.</p>
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr><th>Stack</th><th>Required Tools</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><strong>Backend (Python)</strong></td><td>Docker, Docker Compose, uv, Python 3.11+</td></tr>
+            <tr><td><strong>Frontend (Node)</strong></td><td>Node.js 18+, npm</td></tr>
+            <tr><td><strong>MCP: Serena</strong></td><td>Python 3.11+, uvx</td></tr>
+            <tr><td><strong>MCP: Sequential Thinking</strong></td><td>Node.js 18+, npx</td></tr>
+            <tr><td><strong>MCP: Context7</strong></td><td>Node.js 18+, npx</td></tr>
+            <tr><td><strong>MCP: Playwright</strong> (optional)</td><td>Node.js 18+, npx</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ===== FAQ ===== -->
+    <section id="faq">
+      <h2>FAQ</h2>
+      <details>
+        <summary>Do I need all three MCP servers?</summary>
+        <div class="faq-answer">
+          Sequential Thinking and Context7 work out of the box with just Node.js. Serena requires Python/uvx but provides the most powerful code intelligence. You can disable any server in <code>.claude/settings.local.json</code>.
+        </div>
+      </details>
+      <details>
+        <summary>Can I use this with a monorepo?</summary>
+        <div class="faq-answer">
+          Yes. Use <code>paths:</code> frontmatter in rules to scope them to specific directories. Commands and agents are already framework-agnostic.
+        </div>
+      </details>
+      <details>
+        <summary>How do I disable a specific command or agent?</summary>
+        <div class="faq-answer">
+          Simply delete the <code>.md</code> file. Claude Code discovers them at startup.
+        </div>
+      </details>
+      <details>
+        <summary>The MCP servers aren't starting. What do I check?</summary>
+        <div class="faq-answer">
+          Verify Node.js 18+ and Python 3.11+ are installed. Check <code>.mcp.json</code> paths. Run <code>npx -y @modelcontextprotocol/server-sequential-thinking</code> manually to test.
+        </div>
+      </details>
+    </section>
+
+  </div>
+</main>
+
+<!-- ===== Footer ===== -->
+<footer class="footer">
+  <p>
+    <a href="https://github.com/yusupsupriyadi/claude-code-mastering" target="_blank" rel="noopener">GitHub</a>
+    &nbsp;&middot;&nbsp;
+    <a href="https://github.com/yusupsupriyadi/claude-code-mastering/issues" target="_blank" rel="noopener">Contributing</a>
+  </p>
+  <p>MIT License &middot; &copy; 2025 <a href="https://github.com/yusupsupriyadi" target="_blank" rel="noopener">Yusup Supriyadi</a></p>
+</footer>
+
+<script>
+  // ===== Sidebar toggle (mobile) =====
+  const sidebar = document.getElementById('sidebar');
+  const overlay = document.getElementById('sidebarOverlay');
+  const hamburger = document.getElementById('hamburger');
+  const sidebarClose = document.getElementById('sidebarClose');
+
+  function openSidebar() {
+    sidebar.classList.add('open');
+    overlay.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeSidebar() {
+    sidebar.classList.remove('open');
+    overlay.classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  hamburger.addEventListener('click', openSidebar);
+  sidebarClose.addEventListener('click', closeSidebar);
+  overlay.addEventListener('click', closeSidebar);
+
+  // Close sidebar when clicking a nav item on mobile
+  document.querySelectorAll('.sidebar-nav .nav-item').forEach(item => {
+    item.addEventListener('click', () => {
+      if (window.innerWidth <= 768) {
+        closeSidebar();
+      }
+    });
+  });
+
+  // ===== Scroll spy =====
+  const sections = document.querySelectorAll('section[id]');
+  const navItems = document.querySelectorAll('.sidebar-nav .nav-item');
+
+  function updateScrollSpy() {
+    const scrollY = window.scrollY + 80;
+
+    let current = '';
+    sections.forEach(section => {
+      const top = section.offsetTop;
+      const height = section.offsetHeight;
+      if (scrollY >= top - 10) {
+        current = section.getAttribute('id');
+      }
+    });
+
+    navItems.forEach(item => {
+      item.classList.toggle('active', item.getAttribute('href') === `#${current}`);
+    });
+  }
+
+  window.addEventListener('scroll', updateScrollSpy, { passive: true });
+  updateScrollSpy();
+
+  // ===== Copy buttons =====
+  document.querySelectorAll('.copy-btn').forEach(btn => {
+    btn.addEventListener('click', async () => {
+      const targetId = btn.getAttribute('data-target');
+      const codeEl = document.getElementById(targetId);
+      if (!codeEl) return;
+
+      try {
+        await navigator.clipboard.writeText(codeEl.textContent);
+        btn.classList.add('copied');
+        btn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg> Copied!`;
+        setTimeout(() => {
+          btn.classList.remove('copied');
+          btn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg> Copy`;
+        }, 2000);
+      } catch {
+        const ta = document.createElement('textarea');
+        ta.value = codeEl.textContent;
+        ta.style.position = 'fixed';
+        ta.style.opacity = '0';
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand('copy');
+        document.body.removeChild(ta);
+        btn.classList.add('copied');
+        btn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg> Copied!`;
+        setTimeout(() => {
+          btn.classList.remove('copied');
+          btn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg> Copy`;
+        }, 2000);
+      }
+    });
+  });
+
+  // ===== Smooth scroll for anchor links =====
+  document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', e => {
+      const href = anchor.getAttribute('href');
+      if (href === '#') return;
+      const target = document.querySelector(href);
+      if (target) {
+        e.preventDefault();
+        target.scrollIntoView({ behavior: 'smooth' });
+        history.pushState(null, '', href);
+      }
+    });
+  });
+</script>
+
+</body>
+</html>
