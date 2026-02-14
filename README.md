@@ -258,6 +258,8 @@ The workflow guides you through:
 
 Three MCP servers power the intelligent workflow. All are configured in `.mcp.json` and auto-start with Claude Code.
 
+> **Why only 3?** Every connected MCP server injects its tool definitions into the system prompt, consuming tokens on *every single request* — even when those tools are never used. It's like carrying a full toolbox everywhere but only ever using a screwdriver, a hammer, and a wrench. These three MCPs are chosen because they are **used on every task**: Sequential Thinking analyzes every request, Serena navigates and edits every codebase, and Context7 looks up every library. No wasted tokens, no idle tools — just what you actually need for every vibe coding session.
+
 #### 1. Sequential Thinking
 
 > **Repo**: [modelcontextprotocol/servers/sequentialthinking](https://github.com/modelcontextprotocol/servers/tree/main/src/sequentialthinking) | **npm**: [@modelcontextprotocol/server-sequential-thinking](https://www.npmjs.com/package/@modelcontextprotocol/server-sequential-thinking) | **License**: MIT
